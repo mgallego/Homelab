@@ -1,0 +1,33 @@
+# AGENTS.md
+
+Ansible repo that provisions an Orange Pi 5 Plus (192.168.1.241) base system: user, packages, Docker, M2 disk mount, and NFS shares.
+
+Write all comments, commit messages, commands, and documentation in English.
+
+## Commands
+
+Run from `provisioning/ansible/`:
+
+```sh
+ansible-playbook -i inventory.ini site.yml
+```
+
+- The playbook connects as `root` and uses `become: true`.
+- Requires the `ansible.posix` collection (uses `ansible.posix.mount`). Install with `ansible-galaxy collection install ansible.posix` if missing.
+- No dry-run/lint wrappers exist; use `ansible-playbook --check` and `--syntax-check` for verification.
+
+## Layout
+
+- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `docker`, `mounts`, `nfs`.
+- `inventory.ini` — single host `orangepi`, fixed IP, hardcoded `ansible_python_interpreter=/usr/bin/python3.14`.
+- `group_vars/orangepi/` — vars + vault.
+
+## Gotchas
+
+- `my_ssh_pubkey` (used by the `users` role) is defined in `group_vars/orangepi/vault.yml`. That file is **plaintext YAML, not ansible-vault encrypted**, but it is gitignored — never commit it and don't try `--ask-vault-pass` to load it.
+- Never create or modify any `vault.yml` yourself. If a new variable must live in the vault, ask the user to add it to `group_vars/orangepi/vault.yml`.
+- `system_user` is `moises` (uid 1000); all mount paths are under `/home/moises/mnt/`.
+- The M2 disk is mounted by UUID (`m2_uuid` in `vars.yml`), not by device path.
+- NFS mounts use `nofail`; M2 uses `noatime`. NFS source hosts are other LAN machines (192.168.1.20 / .245).
+- Docker is installed from the Docker apt repo via `deb822_repository`; arch is mapped manually (arm64 for aarch64).
+- Requires network access to the Orange Pi from wherever the playbook runs.

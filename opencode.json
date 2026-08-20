@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "read": { "*": "allow", "**/vault.yml": "deny" },
+    "edit": { "*": "allow", "**/vault.yml": "deny" },
+    "grep": { "*": "allow", "**/vault.yml": "deny" },
+    "glob": { "*": "allow", "**/vault.yml": "deny" },
+    "list": { "*": "allow", "**/vault.yml": "deny" },
+    "bash": { "*": "allow", "*vault.yml*": "deny" }
+  }
+}
