@@ -27,14 +27,21 @@
     key: "{{ my_ssh_pubkey }}"
     state: present
 
-- name: Generate SSH keypair for git (ed25519)
-  openssh_keypair:
-    path: "/home/{{ system_user }}/.ssh/id_ed25519"
-    type: ed25519
+- name: Write git SSH private key for moises
+  copy:
+    content: "{{ git_ssh_private_key }}"
+    dest: "/home/{{ system_user }}/.ssh/id_ed25519"
     owner: "{{ system_user }}"
     group: "{{ system_user }}"
     mode: "0600"
-    comment: "{{ system_user }}@orangepi5-plus"
+
+- name: Write git SSH public key for moises
+  copy:
+    content: "{{ git_ssh_public_key }}"
+    dest: "/home/{{ system_user }}/.ssh/id_ed25519.pub"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0644"
 
 - name: Create .ssh directory for root
   file:

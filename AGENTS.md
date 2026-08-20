@@ -26,6 +26,7 @@ ansible-playbook -i inventory.ini site.yml
 ## Gotchas
 
 - `my_ssh_pubkey` (used by the `users` role) is defined in `group_vars/orangepi/vault.yml`. That file is **plaintext YAML, not ansible-vault encrypted**, but it is gitignored — never commit it and don't try `--ask-vault-pass` to load it.
+- The git SSH keypair for the `iac` role comes from `git_ssh_private_key` / `git_ssh_public_key` (in the vault). `vars.yml` only holds placeholder examples — the real values must live in `vault.yml` or the written key will be invalid.
 - Never create or modify any `vault.yml` yourself. If a new variable must live in the vault, ask the user to add it to `group_vars/orangepi/vault.yml`.
 - `system_user` is `moises` (uid 1000); all mount paths are under `/home/moises/mnt/`.
 - The M2 disk is mounted by UUID (`m2_uuid` in `vars.yml`), not by device path. It is mounted by the `mounts` role, which runs **before** `docker` so the M2 is available when Docker's data-root is configured.
