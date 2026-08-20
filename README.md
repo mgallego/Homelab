@@ -22,6 +22,7 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | 👤 **Users** | Creates the `moises` user (uid 1000), sudo + docker groups, SSH keys, and authorized keys for `moises` and `root`. |
 | 📦 **Packages** | Installs base tools (`tmux`, `git`). |
 | 🧠 **System** | Reduces SD writes: journald in RAM, apt cache in tmpfs. |
+| 🚫 **Pi-hole** | Frees port 53 (disables systemd-resolved) for Pi-hole; static `/etc/resolv.conf`. Run only on Pi-hole hosts (`--tags pihole`). |
 | 🔗 **Symlinks** | Links SD paths to M2 folders (SD → M2), sparing the SD card. |
 | 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` and containerd's root live on the M.2 disk to keep writes off the SD card; container logs are capped. |
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
@@ -44,6 +45,7 @@ provisioning/
         ├── users/                  # User, SSH keys, sudo/docker groups
         ├── packages/               # Base apt packages
         ├── system/                 # Journald in RAM, apt cache tmpfs
+        ├── pihole/                 # Frees port 53 for Pi-hole
         ├── mounts/                 # M2 disk mount (before docker)
         ├── docker/                 # Docker engine + data-root on M2
         ├── nfs/                    # NFS client + shares

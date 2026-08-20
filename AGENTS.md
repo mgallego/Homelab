@@ -19,7 +19,7 @@ ansible-playbook -i inventory.ini site.yml
 
 ## Layout
 
-- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `system`, `mounts`, `docker`, `nfs`, `nfs_server`, `symlinks`, `iac`, `stacks`.
+- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `system`, `pihole`, `mounts`, `docker`, `nfs`, `nfs_server`, `symlinks`, `iac`, `stacks`.
 - `inventory.ini` — single host `orangepi`, fixed IP, hardcoded `ansible_python_interpreter=/usr/bin/python3.14`.
 - `group_vars/orangepi/` — vars + vault.
 
@@ -32,6 +32,7 @@ ansible-playbook -i inventory.ini site.yml
 - The M2 disk is mounted by UUID (`m2_uuid` in `vars.yml`), not by device path. It is mounted by the `mounts` role, which runs **before** `docker` so the M2 is available when Docker's data-root is configured.
 - Docker's `data-root` lives on the M2 disk (`docker_data_root` in `vars.yml`, default `/home/moises/mnt/M2/docker`) via `/etc/docker/daemon.json`, to spare the SD card from writes. Container logs are capped (`log-opts` max-size 10m / max-file 3). containerd's root also lives on M2 (`containerd_root`, `/home/moises/mnt/M2/containerd`). Running `--tags docker` or `--tags stacks` requires the M2 to be mounted first.
 - The `system` role reduces SD writes: systemd-journald runs volatile in RAM (64M cap) and `/var/cache/apt` is mounted as tmpfs. Swap is zRAM (in RAM), so it never touches the SD.
+- The `pihole` role frees port 53 for Pi-hole: it disables `systemd-resolved` (which holds `127.0.0.53/54:53`) and writes a static `/etc/resolv.conf` pointing to 1.1.1.1 / 9.9.9.9. Only run this on machines that will host Pi-hole (`--tags pihole`).
 - The `symlinks` role (runs after `nfs_server`, needs M2 and NFS mounts) creates symlinks from SD paths to targets. Entries come from `symlinks` in `vars.yml` (`src` = M2 or NFS target, `path` = SD link). If `path` is already a symlink it is left untouched; a real directory gets renamed to `path.bak` before linking.
 - The infra-as-code repo is cloned to `infra_path` (`vars.yml`, on the M2 disk, currently `/home/moises/mnt/M2/iac`). Container data/configs live in a separate M2 folder (`/home/moises/mnt/M2/Infra`); keep them apart.
 - NFS mounts use `nofail`; M2 uses `noatime`. NFS source hosts are other LAN machines (192.168.1.20 / .245).
