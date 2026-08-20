@@ -25,6 +25,7 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
 | 🌐 **NFS** | Mounts NFS shares from the NAS machines (192.168.1.20 / .245) under `/home/moises/mnt/`. |
 | 🗄️ **NFS Server** | Shares the M2 disk (`/home/moises/mnt/M2`) to other LAN machines via NFS. |
+| 📦 **IAC** | Clones the infrastructure-as-code repository into `/home/moises/Infra` using the SSH key from the `users` role. |
 
 ## 📁 Layout
 
@@ -42,7 +43,8 @@ provisioning/
         ├── docker/                 # Docker engine + plugins
         ├── mounts/                 # M2 disk mount
         ├── nfs/                    # NFS client + shares
-        └── nfs_server/             # Serves the M2 disk to other machines
+        ├── nfs_server/             # Serves the M2 disk to other machines
+        └── iac/                    # Clones the infra-as-code repository
 ```
 
 ## 🚀 Getting started

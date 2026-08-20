@@ -6,6 +6,11 @@
     "grep": { "*": "allow", "**/vault.yml": "deny" },
     "glob": { "*": "allow", "**/vault.yml": "deny" },
     "list": { "*": "allow", "**/vault.yml": "deny" },
-    "bash": { "*": "allow", "*vault.yml*": "deny" }
+    "bash": {
+      "*": "allow",
+      "*vault.yml*": "deny",
+      "ansible-playbook*": "deny",
+      "ansible-playbook *syntax-check*": "allow"
+    }
   }
 }

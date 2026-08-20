@@ -1,0 +1,7 @@
+---
+- name: Clone infra repository
+  git:
+    repo: "{{ infra_repository }}"
+    dest: "{{ infra_path }}"
+    accept_hostkey: yes
+  become_user: "{{ system_user }}"
