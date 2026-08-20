@@ -4,5 +4,6 @@
     name:
       - tmux
       - git
+      - vim
     state: present
     update_cache: yes
