@@ -18,7 +18,7 @@ ansible-playbook -i inventory.ini site.yml
 
 ## Layout
 
-- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `docker`, `mounts`, `nfs`.
+- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `docker`, `mounts`, `nfs`, `nfs_server`.
 - `inventory.ini` — single host `orangepi`, fixed IP, hardcoded `ansible_python_interpreter=/usr/bin/python3.14`.
 - `group_vars/orangepi/` — vars + vault.
 
@@ -29,5 +29,6 @@ ansible-playbook -i inventory.ini site.yml
 - `system_user` is `moises` (uid 1000); all mount paths are under `/home/moises/mnt/`.
 - The M2 disk is mounted by UUID (`m2_uuid` in `vars.yml`), not by device path.
 - NFS mounts use `nofail`; M2 uses `noatime`. NFS source hosts are other LAN machines (192.168.1.20 / .245).
+- The Orange Pi also serves its own M2 disk via NFS (`nfs_server` role): the export path and allowed clients come from `nfs_export_path` / `nfs_export_clients` in `vars.yml`.
 - Docker is installed from the Docker apt repo via `deb822_repository`; arch is mapped manually (arm64 for aarch64).
 - Requires network access to the Orange Pi from wherever the playbook runs.

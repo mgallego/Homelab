@@ -24,6 +24,7 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. |
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
 | 🌐 **NFS** | Mounts NFS shares from the NAS machines (192.168.1.20 / .245) under `/home/moises/mnt/`. |
+| 🗄️ **NFS Server** | Shares the M2 disk (`/home/moises/mnt/M2`) to other LAN machines via NFS. |
 
 ## 📁 Layout
 
@@ -40,7 +41,8 @@ provisioning/
         ├── packages/               # Base apt packages
         ├── docker/                 # Docker engine + plugins
         ├── mounts/                 # M2 disk mount
-        └── nfs/                    # NFS client + shares
+        ├── nfs/                    # NFS client + shares
+        └── nfs_server/             # Serves the M2 disk to other machines
 ```
 
 ## 🚀 Getting started

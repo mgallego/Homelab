@@ -1,0 +1,4 @@
+# Managed by Ansible - do not edit manually
+{% for client in nfs_export_clients %}
+{{ nfs_export_path }} {{ client }}(rw,sync,no_subtree_check)
+{% endfor %}

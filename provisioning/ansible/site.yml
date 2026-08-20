@@ -9,3 +9,4 @@
     - docker
     - mounts
     - nfs
+    - nfs_server
