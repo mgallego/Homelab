@@ -11,5 +11,6 @@
     - { role: docker, tags: [docker] }
     - { role: nfs, tags: [nfs] }
     - { role: nfs_server, tags: [nfs_server] }
+    - { role: symlinks, tags: [symlinks] }
     - { role: iac, tags: [iac] }
     - { role: stacks, tags: [stacks] }

@@ -7,6 +7,9 @@ docker_data_root: "/home/{{ system_user }}/mnt/M2/docker"
 
 containerd_root: "/home/{{ system_user }}/mnt/M2/containerd"
 
+symlinks:
+  - { src: "/home/{{ system_user }}/mnt/M2/local", path: "/home/{{ system_user }}/local" }
+
 docker_stacks:
   - portainer/stacks/portainer
 

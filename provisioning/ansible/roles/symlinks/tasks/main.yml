@@ -1,0 +1,20 @@
+---
+- name: Stat symlink paths
+  stat:
+    path: "{{ item.path }}"
+  loop: "{{ symlinks }}"
+  register: symlink_stats
+
+- name: Backup existing real directories
+  command: mv "{{ item.item.path }}" "{{ item.item.path }}.bak"
+  loop: "{{ symlink_stats.results }}"
+  when: item.stat.exists and not item.stat.islnk
+
+- name: Create symlinks from SD to M2
+  file:
+    src: "{{ item.src }}"
+    path: "{{ item.path }}"
+    state: link
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+  loop: "{{ symlinks }}"
