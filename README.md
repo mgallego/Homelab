@@ -21,11 +21,11 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | --- | --- |
 | 👤 **Users** | Creates the `moises` user (uid 1000), sudo + docker groups, SSH keys, and authorized keys for `moises` and `root`. |
 | 📦 **Packages** | Installs base tools (`tmux`, `git`). |
-| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. |
+| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` lives on the M.2 disk (`/home/moises/mnt/M2/docker`) to keep writes off the SD card. |
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
 | 🌐 **NFS** | Mounts NFS shares from the NAS machines (192.168.1.20 / .245) under `/home/moises/mnt/`. |
 | 🗄️ **NFS Server** | Shares the M2 disk (`/home/moises/mnt/M2`) to other LAN machines via NFS. |
-| 📦 **IAC** | Clones the infrastructure-as-code repository into `/home/moises/Infra` using the SSH key from the `users` role. |
+| 📦 **IAC** | Clones the infrastructure-as-code repository into `/home/moises/mnt/M2/iac` using the SSH key from the `users` role. |
 | 🐙 **Stacks** | Deploys Docker Compose stacks (e.g. Portainer) from the infra repo. |
 
 ## 📁 Layout
@@ -41,8 +41,8 @@ provisioning/
     └── roles/
         ├── users/                  # User, SSH keys, sudo/docker groups
         ├── packages/               # Base apt packages
-        ├── docker/                 # Docker engine + plugins
-        ├── mounts/                 # M2 disk mount
+        ├── mounts/                 # M2 disk mount (before docker)
+        ├── docker/                 # Docker engine + data-root on M2
         ├── nfs/                    # NFS client + shares
         ├── nfs_server/             # Serves the M2 disk to other machines
         ├── iac/                    # Clones the infra-as-code repository
@@ -74,6 +74,7 @@ ansible-playbook --check -i inventory.ini site.yml
 
 - Network access from the machine running the playbook to `192.168.1.241`.
 - The playbook connects as `root` and uses `become: true`.
+- `infra_path` (`vars.yml`) is the repo clone at `/home/moises/mnt/M2/iac`; container data/configs stay in `/home/moises/mnt/M2/Infra`.
 - The host must expose `/usr/bin/python3.14` as its Python interpreter (hardcoded in `inventory.ini`).
 
 ## 🔐 Secrets
@@ -88,9 +89,15 @@ If a new secret is ever needed, it must be added by the repo owner — never aut
 ## 🗺️ Roadmap
 
 - [x] Provision the Orange Pi 5 Plus base system
+- [x] Move Docker data-root and infra configs to the M.2 disk (spare the SD card)
 - [ ] Add application/services deployment on top of the base system
 - [ ] Expand to provisioning the rest of the homelab (NAS, other SBCs, VMs)
 - [ ] One-command full-homelab disaster recovery
+
+### ⏰ TODO — before the next SD card format
+
+- [ ] Set a **static/fixed IP** on the Orange Pi so a re-provision always lands on the same address.
+- [ ] Set up **fixed SSH keys** (host + user) so the machine keeps its identity across formats.
 
 ## 📝 Contributing
 

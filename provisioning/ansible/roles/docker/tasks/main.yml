@@ -34,6 +34,18 @@
     state: present
     update_cache: yes
 
+- name: Configure Docker data-root on M2
+  copy:
+    content: |
+      {
+        "data-root": "{{ docker_data_root }}"
+      }
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart docker
+
 - name: Enable and start Docker
   systemd:
     name: docker

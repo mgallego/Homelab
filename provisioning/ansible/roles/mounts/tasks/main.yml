@@ -14,3 +14,19 @@
     fstype: ext4
     opts: defaults,noatime
     state: mounted
+
+- name: Create Docker data-root directory on M2
+  file:
+    path: "{{ docker_data_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0711"
+
+- name: Create iac directory on M2
+  file:
+    path: "{{ infra_path }}"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0755"

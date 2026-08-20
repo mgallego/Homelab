@@ -1,7 +1,9 @@
 system_user: moises
 m2_uuid: "cb58afcf-a254-4835-993e-ac4fc1834140"
 
-infra_path: "/home/{{ system_user }}/Infra"
+infra_path: "/home/{{ system_user }}/mnt/M2/iac"
+
+docker_data_root: "/home/{{ system_user }}/mnt/M2/docker"
 
 docker_stacks:
   - portainer/stacks/portainer

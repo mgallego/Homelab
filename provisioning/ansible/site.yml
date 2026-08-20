@@ -6,8 +6,8 @@
   roles:
     - { role: users, tags: [users] }
     - { role: packages, tags: [packages] }
-    - { role: docker, tags: [docker] }
     - { role: mounts, tags: [mounts] }
+    - { role: docker, tags: [docker] }
     - { role: nfs, tags: [nfs] }
     - { role: nfs_server, tags: [nfs_server] }
     - { role: iac, tags: [iac] }
