@@ -5,6 +5,8 @@ infra_path: "/home/{{ system_user }}/mnt/M2/iac"
 
 docker_data_root: "/home/{{ system_user }}/mnt/M2/docker"
 
+containerd_root: "/home/{{ system_user }}/mnt/M2/containerd"
+
 docker_stacks:
   - portainer/stacks/portainer
 

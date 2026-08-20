@@ -23,6 +23,14 @@
     group: root
     mode: "0711"
 
+- name: Create containerd root directory on M2
+  file:
+    path: "{{ containerd_root }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0711"
+
 - name: Create iac directory on M2
   file:
     path: "{{ infra_path }}"

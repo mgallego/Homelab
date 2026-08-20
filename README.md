@@ -21,7 +21,8 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | --- | --- |
 | 👤 **Users** | Creates the `moises` user (uid 1000), sudo + docker groups, SSH keys, and authorized keys for `moises` and `root`. |
 | 📦 **Packages** | Installs base tools (`tmux`, `git`). |
-| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` lives on the M.2 disk (`/home/moises/mnt/M2/docker`) to keep writes off the SD card. |
+| 🧠 **System** | Reduces SD writes: journald in RAM, apt cache in tmpfs. |
+| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` and containerd's root live on the M.2 disk to keep writes off the SD card; container logs are capped. |
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
 | 🌐 **NFS** | Mounts NFS shares from the NAS machines (192.168.1.20 / .245) under `/home/moises/mnt/`. |
 | 🗄️ **NFS Server** | Shares the M2 disk (`/home/moises/mnt/M2`) to other LAN machines via NFS. |
@@ -41,6 +42,7 @@ provisioning/
     └── roles/
         ├── users/                  # User, SSH keys, sudo/docker groups
         ├── packages/               # Base apt packages
+        ├── system/                 # Journald in RAM, apt cache tmpfs
         ├── mounts/                 # M2 disk mount (before docker)
         ├── docker/                 # Docker engine + data-root on M2
         ├── nfs/                    # NFS client + shares

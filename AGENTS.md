@@ -19,7 +19,7 @@ ansible-playbook -i inventory.ini site.yml
 
 ## Layout
 
-- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `mounts`, `docker`, `nfs`, `nfs_server`, `iac`, `stacks`.
+- `provisioning/ansible/site.yml` — entrypoint; roles run in order: `users`, `packages`, `system`, `mounts`, `docker`, `nfs`, `nfs_server`, `iac`, `stacks`.
 - `inventory.ini` — single host `orangepi`, fixed IP, hardcoded `ansible_python_interpreter=/usr/bin/python3.14`.
 - `group_vars/orangepi/` — vars + vault.
 
@@ -29,7 +29,8 @@ ansible-playbook -i inventory.ini site.yml
 - Never create or modify any `vault.yml` yourself. If a new variable must live in the vault, ask the user to add it to `group_vars/orangepi/vault.yml`.
 - `system_user` is `moises` (uid 1000); all mount paths are under `/home/moises/mnt/`.
 - The M2 disk is mounted by UUID (`m2_uuid` in `vars.yml`), not by device path. It is mounted by the `mounts` role, which runs **before** `docker` so the M2 is available when Docker's data-root is configured.
-- Docker's `data-root` lives on the M2 disk (`docker_data_root` in `vars.yml`, default `/home/moises/mnt/M2/docker`) via `/etc/docker/daemon.json`, to spare the SD card from writes. Running `--tags docker` or `--tags stacks` requires the M2 to be mounted first.
+- Docker's `data-root` lives on the M2 disk (`docker_data_root` in `vars.yml`, default `/home/moises/mnt/M2/docker`) via `/etc/docker/daemon.json`, to spare the SD card from writes. Container logs are capped (`log-opts` max-size 10m / max-file 3). containerd's root also lives on M2 (`containerd_root`, `/home/moises/mnt/M2/containerd`). Running `--tags docker` or `--tags stacks` requires the M2 to be mounted first.
+- The `system` role reduces SD writes: systemd-journald runs volatile in RAM (64M cap) and `/var/cache/apt` is mounted as tmpfs. Swap is zRAM (in RAM), so it never touches the SD.
 - The infra-as-code repo is cloned to `infra_path` (`vars.yml`, on the M2 disk, currently `/home/moises/mnt/M2/iac`). Container data/configs live in a separate M2 folder (`/home/moises/mnt/M2/Infra`); keep them apart.
 - NFS mounts use `nofail`; M2 uses `noatime`. NFS source hosts are other LAN machines (192.168.1.20 / .245).
 - The Orange Pi also serves its own M2 disk via NFS (`nfs_server` role): the export path and allowed clients come from `nfs_export_path` / `nfs_export_clients` in `vars.yml`.

@@ -38,13 +38,29 @@
   copy:
     content: |
       {
-        "data-root": "{{ docker_data_root }}"
+        "data-root": "{{ docker_data_root }}",
+        "log-driver": "json-file",
+        "log-opts": {
+          "max-size": "10m",
+          "max-file": "3"
+        }
       }
     dest: /etc/docker/daemon.json
     owner: root
     group: root
     mode: "0644"
   notify: restart docker
+
+- name: Configure containerd root on M2
+  copy:
+    content: |
+      version = 2
+      root = "{{ containerd_root }}"
+    dest: /etc/containerd/config.toml
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart containerd
 
 - name: Enable and start Docker
   systemd:
