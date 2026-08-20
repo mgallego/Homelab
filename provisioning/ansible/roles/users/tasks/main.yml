@@ -1,0 +1,51 @@
+---
+- name: Create moises user if not present
+  user:
+    name: "{{ system_user }}"
+    uid: 1000
+    shell: /bin/bash
+    create_home: yes
+    state: present
+
+- name: Add moises to sudoers group
+  user:
+    name: "{{ system_user }}"
+    groups: sudo
+    append: yes
+
+- name: Create .ssh directory for moises
+  file:
+    path: "/home/{{ system_user }}/.ssh"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+
+- name: Add authorized SSH public key for moises
+  authorized_key:
+    user: "{{ system_user }}"
+    key: "{{ my_ssh_pubkey }}"
+    state: present
+
+- name: Generate SSH keypair for git (ed25519)
+  openssh_keypair:
+    path: "/home/{{ system_user }}/.ssh/id_ed25519"
+    type: ed25519
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0600"
+    comment: "{{ system_user }}@orangepi5-plus"
+
+- name: Create .ssh directory for root
+  file:
+    path: "/root/.ssh"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Add authorized SSH public key for root
+  authorized_key:
+    user: root
+    key: "{{ my_ssh_pubkey }}"
+    state: present

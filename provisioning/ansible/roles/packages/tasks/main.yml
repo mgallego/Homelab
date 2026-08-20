@@ -1,0 +1,8 @@
+---
+- name: Install base packages
+  apt:
+    name:
+      - tmux
+      - git
+    state: present
+    update_cache: yes

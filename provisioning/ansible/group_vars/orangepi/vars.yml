@@ -1,0 +1,10 @@
+system_user: moises
+m2_uuid: "cb58afcf-a254-4835-993e-ac4fc1834140"
+
+nfs_mounts:
+  - { src: "192.168.1.20:/BAK", path: "/home/moises/mnt/BAK" }
+  - { src: "192.168.1.20:/BAK3", path: "/home/moises/mnt/BAK3" }
+  - { src: "192.168.1.245:/home/moises/mnt/BAK4", path: "/home/moises/mnt/BAK4" }
+  - { src: "192.168.1.245:/home/moises/mnt/BAK5", path: "/home/moises/mnt/BAK5" }
+  - { src: "192.168.1.245:/home/moises/mnt/BAK6", path: "/home/moises/mnt/BAK6" }
+  - { src: "192.168.1.245:/home/moises/mnt/BAK7", path: "/home/moises/mnt/BAK7" }

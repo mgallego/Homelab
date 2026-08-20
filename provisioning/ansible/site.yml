@@ -1,0 +1,11 @@
+---
+- name: Provision Orange Pi base system
+  hosts: orangepi
+  become: true
+
+  roles:
+    - users
+    - packages
+    - docker
+    - mounts
+    - nfs

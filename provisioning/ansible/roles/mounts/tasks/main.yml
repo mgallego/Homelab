@@ -1,0 +1,16 @@
+---
+- name: Create M2 mount point
+  file:
+    path: "/home/{{ system_user }}/mnt/M2"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0755"
+
+- name: Mount M2 disk by UUID
+  ansible.posix.mount:
+    path: "/home/{{ system_user }}/mnt/M2"
+    src: "UUID={{ m2_uuid }}"
+    fstype: ext4
+    opts: defaults,noatime
+    state: mounted
