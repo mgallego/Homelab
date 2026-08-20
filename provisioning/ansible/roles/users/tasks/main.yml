@@ -49,3 +49,19 @@
     user: root
     key: "{{ my_ssh_pubkey }}"
     state: present
+
+- name: Create ansible remote_tmp dir for root
+  file:
+    path: "/tmp/ansible-root"
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Create ansible remote_tmp dir for system_user
+  file:
+    path: "/tmp/ansible-{{ system_user }}"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"

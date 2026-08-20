@@ -1,0 +1,7 @@
+---
+- name: Deploy Docker Compose stacks
+  command: docker compose up -d
+  args:
+    chdir: "{{ infra_path }}/{{ item }}"
+  become_user: "{{ system_user }}"
+  loop: "{{ docker_stacks }}"

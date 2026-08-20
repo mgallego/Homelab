@@ -4,10 +4,11 @@
   become: true
 
   roles:
-    - users
-    - packages
-    - docker
-    - mounts
-    - nfs
-    - nfs_server
-    - iac
+    - { role: users, tags: [users] }
+    - { role: packages, tags: [packages] }
+    - { role: docker, tags: [docker] }
+    - { role: mounts, tags: [mounts] }
+    - { role: nfs, tags: [nfs] }
+    - { role: nfs_server, tags: [nfs_server] }
+    - { role: iac, tags: [iac] }
+    - { role: stacks, tags: [stacks] }

@@ -3,6 +3,9 @@ m2_uuid: "cb58afcf-a254-4835-993e-ac4fc1834140"
 
 infra_path: "/home/{{ system_user }}/Infra"
 
+docker_stacks:
+  - portainer/stacks/portainer
+
 nfs_export_path: "/home/{{ system_user }}/mnt/M2"
 nfs_export_clients:
   - 192.168.1.133
