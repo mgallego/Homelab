@@ -73,3 +73,24 @@
     name: "{{ system_user }}"
     groups: docker
     append: yes
+
+- name: Create docker config directory for system_user
+  file:
+    path: "/home/{{ system_user }}/.docker"
+    state: directory
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0700"
+
+- name: Build docker registry auth entries
+  set_fact:
+    docker_registry_auths: "{{ docker_registry_auths | default({}) | combine({item.url: {'auth': (item.username + ':' + item.token) | b64encode}}) }}"
+  loop: "{{ docker_registries }}"
+
+- name: Write docker registry config for system_user
+  copy:
+    content: "{{ {'auths': docker_registry_auths} | to_json }}"
+    dest: "/home/{{ system_user }}/.docker/config.json"
+    owner: "{{ system_user }}"
+    group: "{{ system_user }}"
+    mode: "0600"
