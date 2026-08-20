@@ -20,11 +20,11 @@ It currently starts small: provisioning the base system for an **Orange Pi 5 Plu
 | Layer | What it does |
 | --- | --- |
 | 👤 **Users** | Creates the `moises` user (uid 1000), sudo + docker groups, SSH keys, and authorized keys for `moises` and `root`. |
-| 📦 **Packages** | Installs base tools (`tmux`, `git`). |
+| 📦 **Packages** | Installs base tools (`tmux`, `git`, `vim`, `rsync`). |
 | 🧠 **System** | Reduces SD writes: journald in RAM, apt cache in tmpfs. |
 | 🚫 **Pi-hole** | Frees port 53 (disables systemd-resolved) for Pi-hole; static `/etc/resolv.conf`. Run only on Pi-hole hosts (`--tags pihole`). |
 | 🔗 **Symlinks** | Links SD paths to M2 folders (SD → M2), sparing the SD card. |
-| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` and containerd's root live on the M.2 disk to keep writes off the SD card; container logs are capped. |
+| 🐳 **Docker** | Adds the official Docker apt repo and installs `docker-ce`, `containerd`, Buildx, and Compose. `data-root` and containerd's root live on the M.2 disk to keep writes off the SD card; container logs are capped. Registry login (e.g. ghcr.io) is written to `~moises/.docker/config.json` from `docker_registries` (vault). |
 | 💾 **Mounts** | Mounts the M2 NVMe disk by UUID under `/home/moises/mnt/M2`. |
 | 🌐 **NFS** | Mounts NFS shares from the NAS machines (192.168.1.20 / .245) under `/home/moises/mnt/`. |
 | 🗄️ **NFS Server** | Shares the M2 disk (`/home/moises/mnt/M2`) to other LAN machines via NFS. |
@@ -50,6 +50,7 @@ provisioning/
         ├── docker/                 # Docker engine + data-root on M2
         ├── nfs/                    # NFS client + shares
         ├── nfs_server/             # Serves the M2 disk to other machines
+        ├── symlinks/               # SD -> M2/NFS symlinks
         ├── iac/                    # Clones the infra-as-code repository
         └── stacks/                 # Deploys Docker Compose stacks
 ```
@@ -84,10 +85,12 @@ ansible-playbook --check -i inventory.ini site.yml
 
 ## 🔐 Secrets
 
-Sensitive variables (currently the SSH public key) live in `group_vars/orangepi/vault.yml`. That file is:
+Sensitive variables live in `group_vars/orangepi/vault.yml`. That file is:
 
 - **Plaintext YAML** — not actually ansible-vault encrypted.
 - **Gitignored** — it never touches the repository, so nothing secret is ever committed.
+
+It holds: the SSH public key (`my_ssh_pubkey`), the git keypair for the `iac` role (`git_ssh_private_key` / `git_ssh_public_key`), the infra repository URL (`infra_repository`), and Docker registry credentials (`docker_registries`, e.g. ghcr.io).
 
 If a new secret is ever needed, it must be added by the repo owner — never auto-generated or committed.
 
